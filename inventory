@@ -1,3 +1,6 @@
 [radius_servers]
 11.11.11.10
 11.11.11.71
+
+[workstations]
+172.18.16.1
