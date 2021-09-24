@@ -23,3 +23,12 @@
         - apache2
         - libapache2-mod-php
       state: latest
+
+  - name: copy default html file for site
+    tags: apache,apache2
+    copy:
+      src: default_site.html
+      dest: /var/www/html/index2.html
+      owner: root
+      group: root
+      mode: 0644
