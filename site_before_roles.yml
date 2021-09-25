@@ -1,0 +1,60 @@
+---
+
+- hosts: all
+  become: true
+  tasks:
+
+  - name: update repo cache (Ubuntu)
+    tags: always
+    apt:
+      update_cache: yes
+    changed_when: false
+    when: ansible_distribution == "Ubuntu"
+
+- hosts: all
+  become: true
+  tasks:
+
+  - name: add ssh key for simone
+    tags: always
+    authorized_key:
+      user: simone
+      key: "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIGEdLs9ocCNK+865HUEntPmWdEsewZTDLVq6EpxFUih0 ansible2-ssh"
+
+- hosts: radius_servers
+  become: true
+  tasks:
+
+  - name: install apache2 and php packages for Ubuntu
+    tags: apache,apache2,ubuntu
+    apt:
+      name: 
+        - apache2
+        - libapache2-mod-php
+      state: latest
+
+  - name: copy default html file for site
+    tags: apache,apache2
+    copy:
+      src: default_site.html
+      dest: /var/www/html/index2.html
+      owner: root
+      group: root
+      mode: 0644
+
+- hosts: workstations
+  become: true
+  tasks:
+
+  - name: install unzip
+    package:
+      name: unzip
+
+  - name: install terraform
+    unarchive:
+      src: https://releases.hashicorp.com/terraform/1.0.7/terraform_1.0.7_linux_amd64.zip
+      dest: /usr/local/bin
+      remote_src: yes
+      mode: 0755
+      qwner: root
+      group: root
